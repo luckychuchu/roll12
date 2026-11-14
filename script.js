@@ -392,7 +392,79 @@ layoutButtons.forEach(button => {
   });
 });
 
-// EXPORT (Memoryタイトル ＋ 光漏れ付き6×2フィルムシート書き出し)
+// EXPORT (スマホ標準の保存メニュー ＋ 長押し保存フォールバック対応)
+
+function loadDataUrl(dataUrl) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = reject;
+    image.src = dataUrl;
+  });
+}
+
+function showSaveModal(imageUrl) {
+  const existing = document.getElementById("saveImageModal");
+  if (existing) existing.remove();
+
+  const modal = document.createElement("div");
+  modal.id = "saveImageModal";
+  modal.style.cssText = [
+    "position: fixed",
+    "inset: 0",
+    "z-index: 9999",
+    "background: rgba(8, 6, 5, 0.94)",
+    "display: flex",
+    "flex-direction: column",
+    "align-items: center",
+    "justify-content: center",
+    "padding: 20px",
+    "gap: 16px"
+  ].join(";");
+
+  const hint = document.createElement("p");
+  hint.textContent = "画像を長押しして「写真に保存」を選択してください";
+  hint.style.cssText = [
+    "color: #f0e8db",
+    "font-size: 12px",
+    "letter-spacing: 1px",
+    "text-align: center"
+  ].join(";");
+
+  const previewImg = document.createElement("img");
+  previewImg.src = imageUrl;
+  previewImg.alt = "ROLL 12 Memory";
+  previewImg.style.cssText = [
+    "max-width: 100%",
+    "max-height: 70vh",
+    "border-radius: 4px",
+    "box-shadow: 0 12px 35px rgba(0,0,0,0.8)",
+    "-webkit-touch-callout: default"
+  ].join(";");
+
+  const closeBtn = document.createElement("button");
+  closeBtn.textContent = "CLOSE";
+  closeBtn.style.cssText = [
+    "padding: 12px 28px",
+    "background: #252525",
+    "color: #e99a42",
+    "border: 1px solid #e99a42",
+    "font-size: 11px",
+    "letter-spacing: 2px",
+    "border-radius: 4px",
+    "cursor: pointer"
+  ].join(";");
+
+  closeBtn.addEventListener("click", () => {
+    URL.revokeObjectURL(imageUrl);
+    modal.remove();
+  });
+
+  modal.appendChild(hint);
+  modal.appendChild(previewImg);
+  modal.appendChild(closeBtn);
+  document.body.appendChild(modal);
+}
 
 async function exportFilm() {
   if (!photos.length) return;
@@ -407,12 +479,13 @@ async function exportFilm() {
 
     const rows = Math.ceil(photos.length / columns);
 
-    const frameWidth = currentLayout === "strip" ? 340 : 420;
+    // スマホのCanvas最大幅制限(4096px)に収まる安全なサイズに調整
+    const frameWidth = currentLayout === "strip" ? 280 : 380;
     const frameHeight = Math.round(frameWidth * 0.75);
-    const railHeight = 56;
-    const seamHeight = 22;
-    const sidePadding = 16;
-    const frameGap = 14;
+    const railHeight = 50;
+    const seamHeight = 20;
+    const sidePadding = 14;
+    const frameGap = 12;
 
     const sheetWidth =
       sidePadding * 2 + columns * frameWidth + (columns - 1) * frameGap;
@@ -422,8 +495,8 @@ async function exportFilm() {
       rows * frameHeight +
       (rows - 1) * seamHeight;
 
-    const headerHeight = 150;
-    const bottomPadding = 90;
+    const headerHeight = 136;
+    const bottomPadding = 80;
 
     const width = sheetWidth;
     const height = headerHeight + sheetHeight + bottomPadding;
@@ -445,20 +518,19 @@ async function exportFilm() {
     context.fillRect(0, 0, width, height);
 
     // 2. 上部「Memory」タイトルと左右の細線
-    const headerY = 82;
+    const headerY = 74;
     context.save();
-    context.font = 'italic 400 54px "Cormorant Garamond", Georgia, "Times New Roman", serif';
+    context.font = 'italic 400 48px "Cormorant Garamond", Georgia, "Times New Roman", serif';
     context.fillStyle = "#f0e8db";
     context.textAlign = "center";
     context.textBaseline = "middle";
     context.fillText("Memory", width / 2, headerY);
 
     const textWidth = context.measureText("Memory").width;
-    const lineGap = 36;
-    const lineLength = Math.min(480, (width - textWidth) / 2 - 140);
+    const lineGap = 32;
+    const lineLength = Math.min(440, (width - textWidth) / 2 - 120);
 
     if (lineLength > 40) {
-      // 左線
       const leftStart = width / 2 - textWidth / 2 - lineGap - lineLength;
       const leftEnd = width / 2 - textWidth / 2 - lineGap;
       const leftGrad = context.createLinearGradient(leftStart, headerY, leftEnd, headerY);
@@ -471,7 +543,6 @@ async function exportFilm() {
       context.lineTo(leftEnd, headerY);
       context.stroke();
 
-      // 右線
       const rightStart = width / 2 + textWidth / 2 + lineGap;
       const rightEnd = rightStart + lineLength;
       const rightGrad = context.createLinearGradient(rightStart, headerY, rightEnd, headerY);
@@ -490,7 +561,6 @@ async function exportFilm() {
     context.fillStyle = "#1b140f";
     context.fillRect(0, sheetY, sheetWidth, sheetHeight);
 
-    // シート上下の微細な縁取り
     context.strokeStyle = "rgba(180, 120, 68, 0.25)";
     context.lineWidth = 2;
     context.beginPath();
@@ -501,14 +571,13 @@ async function exportFilm() {
     context.stroke();
 
     // 4. 上下端の縦長パーフォレーション（送り穴）
-    const holeStep = 54;
-    const holeWidth = 23;
-    const holeHeight = 36;
-    const holeRadius = 5;
+    const holeStep = 48;
+    const holeWidth = 20;
+    const holeHeight = 32;
+    const holeRadius = 4;
     const holeMarginY = (railHeight - holeHeight) / 2;
 
-    for (let hx = 14; hx < sheetWidth - 14; hx += holeStep) {
-      // 上穴
+    for (let hx = 12; hx < sheetWidth - 12; hx += holeStep) {
       context.fillStyle = "#0b0908";
       context.strokeStyle = "rgba(140, 98, 64, 0.45)";
       context.lineWidth = 1.5;
@@ -517,7 +586,6 @@ async function exportFilm() {
       context.fill();
       context.stroke();
 
-      // 下穴
       context.beginPath();
       context.roundRect(
         hx,
@@ -530,14 +598,18 @@ async function exportFilm() {
       context.stroke();
     }
 
-    // 5. 各行の写真と中央の水平継ぎ目
+    // 5. 各行の写真描画（fetchを挟まず高速読み込み）
+    const loadedImages = await Promise.all(
+      photos.map(photo => loadDataUrl(photo.processed))
+    );
+
     for (let row = 0; row < rows; row++) {
       const rowY = sheetY + railHeight + row * (frameHeight + seamHeight);
 
       if (row > 0) {
         const seamY = rowY - seamHeight;
         context.fillStyle = "#130e0a";
-        context.fillRect(0, seamY + 5, sheetWidth, seamHeight - 10);
+        context.fillRect(0, seamY + 4, sheetWidth, seamHeight - 8);
 
         context.strokeStyle = "rgba(195, 135, 78, 0.22)";
         context.lineWidth = 1.5;
@@ -549,20 +621,16 @@ async function exportFilm() {
 
       for (let col = 0; col < columns; col++) {
         const index = row * columns + col;
-        if (index >= photos.length) break;
+        if (index >= loadedImages.length) break;
 
         const fx = sidePadding + col * (frameWidth + frameGap);
         const fy = rowY;
 
-        const image = await loadImage(
-          await fetch(photos[index].processed).then(r => r.blob())
-        );
-
         context.save();
         context.beginPath();
-        context.roundRect(fx, fy, frameWidth, frameHeight, 7);
+        context.roundRect(fx, fy, frameWidth, frameHeight, 6);
         context.clip();
-        context.drawImage(image, fx, fy, frameWidth, frameHeight);
+        context.drawImage(loadedImages[index], fx, fy, frameWidth, frameHeight);
         context.restore();
       }
     }
@@ -584,18 +652,56 @@ async function exportFilm() {
     context.fillRect(0, sheetY, sheetWidth, sheetHeight);
     context.restore();
 
-    const link = document.createElement("a");
-    link.download = "ROLL12-Memory-" + currentMode + "-" + currentLayout + ".png";
-    link.href = canvas.toDataURL("image/png");
-    link.click();
+    // 7. Blob生成と保存処理（スマホ共有シート → 長押しモーダル / PCダウンロード）
+    const blob = await new Promise(resolve => {
+      canvas.toBlob(resolve, "image/png");
+    });
+
+    if (!blob) throw new Error("BLOB CREATION FAILED");
+
+    const fileName = "ROLL12-Memory-" + currentMode + "-" + currentLayout + ".png";
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+    if (isMobile && navigator.share && navigator.canShare) {
+      const file = new File([blob], fileName, { type: "image/png" });
+      if (navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({
+            files: [file],
+            title: "ROLL 12 - Memory"
+          });
+          return;
+        } catch (shareError) {
+          // ユーザーが共有メニューを閉じた場合は何もしない
+          if (shareError.name === "AbortError") return;
+          // 共有非対応ブラウザの場合は下の長押しモーダルへ進む
+        }
+      }
+    }
+
+    const blobUrl = URL.createObjectURL(blob);
+
+    if (isMobile) {
+      // 共有APIが使えないスマホブラウザでは長押し保存用モーダルを表示
+      showSaveModal(blobUrl);
+    } else {
+      // PCは直接ダウンロード
+      const link = document.createElement("a");
+      link.download = fileName;
+      link.href = blobUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
+    }
 
   } catch (error) {
     console.error(error);
     alert("画像の書き出しに失敗しました。もう一度試してください。");
+  } finally {
+    exportButton.disabled = false;
+    exportButton.textContent = "EXPORT IMAGE";
   }
-
-  exportButton.disabled = false;
-  exportButton.textContent = "EXPORT IMAGE";
 }
 
 // EVENTS
