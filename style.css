@@ -1,0 +1,712 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: #0b0908;
+  color: #eee9df;
+  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+}
+
+.app {
+  width: 100%;
+  max-width: 540px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 24px 16px 30px;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.header h1 {
+  font-size: 32px;
+  letter-spacing: 5px;
+}
+
+.header h1 span {
+  color: #e99a42;
+}
+
+.header p {
+  margin-top: 6px;
+  font-size: 9px;
+  letter-spacing: 4px;
+  color: #888;
+}
+
+/* CAMERA */
+
+.camera {
+  background: #252525;
+  border: 1px solid #414141;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 15px 40px #0008;
+}
+
+.camera-info,
+.camera-bottom {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #aaa;
+}
+
+.viewfinder {
+  position: relative;
+  overflow: hidden;
+  margin: 16px 0;
+  aspect-ratio: 4 / 3;
+  background: #191816;
+  border: 4px solid #151515;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+#cameraPreview {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  object-fit: cover;
+  display: none;
+}
+
+.focus-frame {
+  position: relative;
+  z-index: 1;
+  width: 75%;
+  height: 65%;
+  border: 1px solid #ffffff66;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.focus-frame span {
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: #aaa;
+}
+
+.focus-frame p {
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+/* FILM COUNTER */
+
+.roll-info {
+  margin-top: 32px;
+}
+
+.roll-heading {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+.film-progress {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 4px;
+  margin-top: 12px;
+}
+
+.film-progress div {
+  height: 22px;
+  background: #292929;
+  border: 1px solid #555;
+  border-radius: 2px;
+}
+
+.film-progress div.taken {
+  background: #e99a42;
+  border-color: #e99a42;
+}
+
+.message {
+  margin-top: 22px;
+  color: #888;
+  font-size: 10px;
+  line-height: 1.8;
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+/* SHUTTER */
+
+.shoot-area {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+#shutterButton {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  border: 3px solid #eee8dc;
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+#shutterButton:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+#shutterButton span {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: #e99a42;
+}
+
+#shutterButton:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+#shootStatus {
+  color: #888;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+/* DEVELOP */
+
+.develop-area {
+  margin-top: 28px;
+  text-align: center;
+}
+
+.develop-area button {
+  background: #e99a42;
+  color: #17120d;
+  border: none;
+  padding: 16px 32px;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 3px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.develop-area p {
+  margin-top: 10px;
+  color: #777;
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+.developing-screen {
+  margin-top: 35px;
+  text-align: center;
+}
+
+.developing-spinner {
+  width: 38px;
+  height: 38px;
+  margin: 0 auto 18px;
+  border: 2px solid #444;
+  border-top-color: #e99a42;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.developing-screen p {
+  font-size: 11px;
+  letter-spacing: 3px;
+}
+
+.developing-screen span {
+  display: block;
+  margin-top: 8px;
+  color: #888;
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+/* RESULTS */
+
+.results-area {
+  margin-top: 35px;
+}
+
+.results-title {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.results-title p {
+  color: #e99a42;
+  font-size: 9px;
+  letter-spacing: 3px;
+}
+
+.results-title h2 {
+  margin: 8px 0;
+  font-size: 21px;
+  letter-spacing: 3px;
+}
+
+.results-title span {
+  color: #888;
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+/* MODE AND LAYOUT BUTTONS */
+
+.mode-selector,
+.layout-selector {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.mode-button,
+.layout-button {
+  flex: 1;
+  padding: 10px 4px;
+  background: #202020;
+  color: #999;
+  border: 1px solid #444;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.mode-button.active,
+.layout-button.active {
+  color: #e99a42;
+  border-color: #e99a42;
+  background: #30251b;
+}
+
+.film-information {
+  display: flex;
+  justify-content: space-between;
+  margin: 18px 0 8px;
+  color: #aaa;
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  padding: 0 4px;
+}
+
+/* ==========================================
+   VINTAGE MEMORY FILM SHEET DESIGN
+   ========================================== */
+
+.negative-strip {
+  width: 100%;
+  background: radial-gradient(ellipse at center, #14100d 0%, #090706 100%);
+  border: 1px solid #1f1914;
+  padding: 20px 0 26px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.9);
+  overflow: hidden;
+}
+
+/* 上部「Memory」タイトルと左右の細線 */
+.memory-header {
+  width: 82%;
+  max-width: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.memory-line-left {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(238, 228, 212, 0.55) 100%);
+}
+
+.memory-line-right {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(270deg, transparent 0%, rgba(238, 228, 212, 0.55) 100%);
+}
+
+.memory-title {
+  font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 20px;
+  letter-spacing: 2.5px;
+  color: #f0e8db;
+  line-height: 1;
+  user-select: none;
+}
+
+/* 横スクロール（STRIPモード）用のラッパー */
+.film-scroll-wrapper {
+  width: 100%;
+}
+
+.negative-strip.layout-strip .film-scroll-wrapper {
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.negative-strip.layout-strip .film-scroll-wrapper::-webkit-scrollbar {
+  height: 5px;
+}
+
+.negative-strip.layout-strip .film-scroll-wrapper::-webkit-scrollbar-thumb {
+  background: #3b2a1e;
+  border-radius: 3px;
+}
+
+/* フィルムシート本体（上下に縦長送り穴・中央継ぎ目・光漏れ） */
+.film-sheet {
+  position: relative;
+  width: 100%;
+  background: #1b140f;
+  border-top: 1px solid rgba(180, 120, 68, 0.22);
+  border-bottom: 1px solid rgba(180, 120, 68, 0.18);
+  overflow: hidden;
+}
+
+.negative-strip.layout-strip .film-sheet {
+  width: max-content;
+}
+
+/* 光漏れ（ライトリーク）＆ヴィンテージ光沢オーバーレイ */
+.film-sheet::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(235, 102, 26, 0.72) 0%,
+      rgba(218, 122, 44, 0.36) 3.8%,
+      rgba(165, 95, 42, 0.12) 9%,
+      transparent 20%,
+      transparent 88%,
+      rgba(180, 108, 45, 0.16) 95%,
+      rgba(222, 114, 38, 0.45) 100%
+    ),
+    radial-gradient(ellipse at 32% 0%, rgba(210, 145, 82, 0.16) 0%, transparent 42%),
+    radial-gradient(ellipse at 65% 50%, rgba(210, 145, 82, 0.14) 0%, transparent 48%);
+  mix-blend-mode: screen;
+}
+
+/* 上下端の縦長パーフォレーション（送り穴）レール */
+.film-rail-top,
+.film-rail-bottom {
+  height: 20px;
+  width: 100%;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Crect x='5.5' y='3' width='9' height='14' rx='2' fill='%230b0908' stroke='%238c6240' stroke-opacity='0.45' stroke-width='0.8'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-position: left center;
+  background-size: 20px 20px;
+}
+
+/* 行と行の間のフィルム継ぎ目（中央の水平ライン） */
+.film-seam {
+  width: 100%;
+  height: 7px;
+  background: #130e0a;
+  border-top: 1px solid rgba(195, 135, 78, 0.16);
+  border-bottom: 1px solid #090706;
+  margin: 4px 0;
+}
+
+/* 写真グリッド */
+.film-frames-grid {
+  display: grid;
+  width: 100%;
+  padding: 0 6px;
+}
+
+/* 6 × 2 レイアウト（メインデザイン：横6列 × 縦2行） */
+.negative-strip.layout-six .film-frames-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 5px;
+}
+
+/* STRIP レイアウト（横1列 × 12コマ） */
+.negative-strip.layout-strip .film-frames-grid {
+  grid-template-columns: repeat(12, 160px);
+  gap: 6px;
+}
+
+/* 4 × 3 レイアウト（横4列 × 縦3行） */
+.negative-strip.layout-grid .film-frames-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+/* 各写真コマ（わずかな角丸＋フィルム質感） */
+.film-frame {
+  min-width: 0;
+  position: relative;
+  border-radius: 3px;
+  overflow: hidden;
+  background: #120e0b;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.45);
+}
+
+.film-frame img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  filter: contrast(1.03) saturate(0.96);
+}
+
+/* EXPORT */
+
+.export-area {
+  text-align: center;
+  margin-top: 25px;
+}
+
+.export-area p {
+  color: #888;
+  font-size: 9px;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+}
+
+#exportButton {
+  width: 100%;
+  max-width: 260px;
+  padding: 14px 20px;
+  background: #252525;
+  color: #e99a42;
+  border: 1px solid #e99a42;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+#exportButton:hover {
+  background: #e99a42;
+  color: #17120d;
+}
+
+footer {
+  margin-top: 40px;
+  text-align: center;
+  color: #666;
+  font-size: 9px;
+  letter-spacing: 2px;
+}
+
+/* ==========================================
+   PORTRAIT MOBILE (スマホ縦向き調整)
+   ========================================== */
+@media (orientation: portrait) and (max-width: 540px) {
+  .app {
+    padding: 20px 10px 30px;
+  }
+
+  .negative-strip {
+    padding: 14px 0 18px;
+    gap: 12px;
+  }
+
+  .memory-title {
+    font-size: 16px;
+  }
+
+  .film-rail-top,
+  .film-rail-bottom {
+    height: 13px;
+    background-size: 13px 13px;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 13 13'%3E%3Crect x='3.5' y='2' width='6' height='9' rx='1.5' fill='%230b0908' stroke='%238c6240' stroke-opacity='0.45' stroke-width='0.7'/%3E%3C/svg%3E");
+  }
+
+  .film-seam {
+    height: 5px;
+    margin: 2.5px 0;
+  }
+
+  .film-frames-grid {
+    padding: 0 3px;
+  }
+
+  .negative-strip.layout-six .film-frames-grid {
+    gap: 2.5px;
+  }
+
+  .film-frame {
+    border-radius: 2px;
+  }
+}
+
+/* ==========================================
+   LANDSCAPE MOBILE (スマホ横向き対応)
+   ========================================== */
+@media (orientation: landscape) and (max-height: 540px) {
+  .app {
+    max-width: 920px;
+    padding: 12px max(20px, env(safe-area-inset-right)) 20px max(20px, env(safe-area-inset-left));
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    column-gap: 20px;
+    row-gap: 8px;
+    align-items: center;
+  }
+
+  .camera {
+    grid-column: 1;
+    grid-row: 1 / span 4;
+    padding: 12px;
+    width: 100%;
+  }
+
+  .viewfinder {
+    margin: 8px 0;
+    max-height: calc(100vh - 82px);
+  }
+
+  .header {
+    grid-column: 2;
+    margin-bottom: 0;
+  }
+
+  .header h1 {
+    font-size: 24px;
+  }
+
+  .header p {
+    margin-top: 2px;
+    font-size: 8px;
+  }
+
+  .roll-info {
+    grid-column: 2;
+    margin-top: 0;
+  }
+
+  .film-progress {
+    margin-top: 8px;
+    gap: 3px;
+  }
+
+  .film-progress div {
+    height: 15px;
+  }
+
+  .message {
+    margin-top: 8px;
+    font-size: 8px;
+    line-height: 1.4;
+  }
+
+  .shoot-area {
+    grid-column: 2;
+    margin-top: 2px;
+    gap: 6px;
+  }
+
+  #shutterButton {
+    width: 60px;
+    height: 60px;
+  }
+
+  #shutterButton span {
+    width: 44px;
+    height: 44px;
+  }
+
+  .develop-area {
+    grid-column: 2;
+    margin-top: 4px;
+  }
+
+  .develop-area button {
+    padding: 12px 20px;
+    font-size: 10px;
+  }
+
+  .develop-area p {
+    margin-top: 6px;
+    font-size: 8px;
+  }
+
+  .developing-screen,
+  .results-area,
+  footer {
+    grid-column: 1 / -1;
+  }
+
+  .results-area {
+    margin-top: 24px;
+  }
+
+  .negative-strip {
+    padding: 26px 0 34px;
+    gap: 22px;
+  }
+
+  .memory-title {
+    font-size: 24px;
+  }
+
+  .film-rail-top,
+  .film-rail-bottom {
+    height: 24px;
+    background-size: 24px 24px;
+  }
+
+  .film-seam {
+    height: 9px;
+    margin: 5px 0;
+  }
+
+  .film-frames-grid {
+    padding: 0 8px;
+  }
+
+  .negative-strip.layout-six .film-frames-grid {
+    gap: 7px;
+  }
+}
