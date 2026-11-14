@@ -85,6 +85,48 @@ body {
   display: none;
 }
 
+/* 前面カメラ時の左右反転（鏡像） */
+#cameraPreview.mirror {
+  transform: scaleX(-1);
+}
+
+/* カメラ切り替えボタン（ファインダー右上） */
+.switch-camera-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  background: rgba(18, 16, 14, 0.72);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  color: #eee9df;
+  border: 1px solid rgba(233, 154, 66, 0.45);
+  border-radius: 20px;
+  font-size: 9px;
+  font-weight: bold;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.switch-camera-btn:active:not(:disabled) {
+  transform: scale(0.94);
+  background: rgba(233, 154, 66, 0.25);
+}
+
+.switch-camera-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.switch-camera-btn svg {
+  color: #e99a42;
+}
+
 .focus-frame {
   position: relative;
   z-index: 1;
