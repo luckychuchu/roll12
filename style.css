@@ -82,7 +82,7 @@ body {
   position: absolute;
   inset: 0;
   object-fit: cover;
-  display: none;
+  display: block;
 }
 
 /* 前面カメラ時の左右反転（鏡像） */
